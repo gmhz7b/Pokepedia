@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CodableExtensions",
+        "repositoryURL": "https://github.com/gmhz7b/CodableExtensions.git",
+        "state": {
+          "branch": null,
+          "revision": "1c5d4410724953631d8185e08b2935bd95f60016",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "CommonKit",
+        "repositoryURL": "https://github.com/gmhz7b/CommonKit.git",
+        "state": {
+          "branch": null,
+          "revision": "3c15731c25189f2ab5af7b5dc66b135461a4f3f0",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "PokemonFoundation",
+        "repositoryURL": "https://github.com/gmhz7b/PokemonFoundation.git",
+        "state": {
+          "branch": null,
+          "revision": "a9705a0b05a6afe97961bac1aedeca35e5c5108d",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "PokemonUIKit",
+        "repositoryURL": "https://github.com/gmhz7b/PokemonUIKit.git",
+        "state": {
+          "branch": null,
+          "revision": "4fd63c1d6ce60bb88481fe2f5853b5d32a7568b2",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "ServiceKit",
+        "repositoryURL": "https://github.com/gmhz7b/ServiceKit.git",
+        "state": {
+          "branch": null,
+          "revision": "04763d32ca4e41cda79799d80d595f61e26c4726",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
