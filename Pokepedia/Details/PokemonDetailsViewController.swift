@@ -3,38 +3,54 @@ import UIKit
 import PokemonFoundation
 import CommonKit
 
-/// A `UIViewController` subclass that displays a `Pokémon`'s `moves` array.
+/// A `UIViewController` subclass that displays a list of `DetailsItem`s.
 ///
-/// - SeeAlso: `MovesModel`.
-/// - SeeAlso: `ViewPokemonMovesAction`.
-final class MovesViewController: UIViewController {
+/// This view controller, when initialized, requires a generic type `T` that conforms to both `Displayable & Decodable`
+/// to be specified.
+///
+/// The specified type is used as the guiding type to be decoded from service and
+/// displayed in an additional `UIViewController` (specifically `PokemonDetailViewController`).
+///
+/// Due to the generic type constraints; conformances to the `UITableViewDelegate` and
+/// `UITableViewDataSource` protocols __must__ be supplied in the class definition.
+///
+/// Consult `ViewPokemonDetailsAction` for invocation examples.
+///
+/// - SeeAlso: `PokemonDetailsModel`.
+/// - SeeAlso: `ViewPokemonDetailsAction`.
+final class PokemonDetailsViewController<T: Displayable & Decodable>: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Properties
     
     /// An object used to block the UI while a networking task is executing.
     private lazy var activityIndicator = lazyActivityIndicator()
     
-    /// The object used to display a collection of `MovesModel.Item`s.
+    /// The object used to display a collection of `DetailsItem`s.
     private lazy var tableView = lazyTableView()
     
     /// An object used to isolate any and all business logic pertinent to this view controller implementation.
     ///
     /// Specific responsibilities of this class include:
-    /// - Maintaining a  collection of `MovesModel.Item`s to display.
-    /// - Performing networking tasks to retrieve additional data when a `MovesModel.Item` is selected.
-    private let model: MovesModel
+    /// - Maintaining a  collection of `DetailsItem`s to display.
+    /// - Performing networking tasks to retrieve additional data when a `DetailsItem` is selected.
+    private let model: PokemonDetailsModel<T>
     
     // MARK: - Initializers
     
     /// - Parameters:
     ///   - model: The model used to isolate any and all business decisions made while this view controller is visible.
-    init(model: MovesModel) {
+    ///   - title: The title of this view controller.
+    init(model: PokemonDetailsModel<T>, title: String) {
         
         // Set the model.
         self.model = model
 
         // Call to `super` to initialize "self".
         super.init(nibName: nil, bundle: nil)
+        
+        // Set the title and the model's delegate properties.
+        self.title = title
+        model.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -42,18 +58,11 @@ final class MovesViewController: UIViewController {
         // Disable use of this view controller in storyboard implementations.
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-// MARK: - Lifecycle Methods
-
-extension MovesViewController {
+    
+    // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Set the title and the model's delegate properties.
-        self.title = "Moves"
-        model.delegate = self
         
         // Add and constrain the `tableView` property.
         //
@@ -69,11 +78,8 @@ extension MovesViewController {
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.constrain(to: view)
     }
-}
     
-// MARK: - UITableViewDelegate
-
-extension MovesViewController: UITableViewDelegate {
+    // MARK: - UITableViewDelegate
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -83,11 +89,8 @@ extension MovesViewController: UITableViewDelegate {
         // Notify the model that a selection occurred.
         model.userTapped(indexPath.row)
     }
-}
     
-// MARK: - UITableViewDataSource
-
-extension MovesViewController: UITableViewDataSource {
+    // MARK: - UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
@@ -121,9 +124,9 @@ extension MovesViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - MovesModelDelegate
+// MARK: - DetailsModelDelegate
 
-extension MovesViewController: MovesModelDelegate {
+extension PokemonDetailsViewController: DetailsModelDelegate {
     
     func willDownload() {
         
@@ -133,7 +136,7 @@ extension MovesViewController: MovesModelDelegate {
         }
     }
     
-    func received(move: Move, withTitle title: String) {
+    func received(displayable: Displayable, withTitle title: String) {
         
         // Place UI updates on the main thread.
         DispatchQueue.main.async { [weak self] in
@@ -141,13 +144,13 @@ extension MovesViewController: MovesModelDelegate {
             // Ensure the `activityIndicator` stops animating.
             self?.activityIndicator.stopAnimating()
             
-            // Create an instance of `MoveViewController` to display the retrieved value.
+            // Create an instance of `PokemonDetailViewController` to display the retrieved value.
             //
-            // Initializer invoked using `.init(move:,title:)` to enable quick docs (option + click).
-            let viewController: MoveViewController = .init(move: move, title: title)
+            // Initializer invoked using `.init(details:,title:)` to enable quick docs (option + click).
+            let viewController: PokemonDetailViewController = .init(details: displayable.details, title: title)
             
-            // Show the `MoveViewController` using the `show(_:,sender:)` method, which will add
-            // the `MoveViewController` to the app's `UINavigationController`'s navigation stack.
+            // Show the `PokemonDetailViewController` using the `show(_:,sender:)` method, which will add
+            // the `PokemonDetailViewController` to the app's `UINavigationController`'s navigation stack.
             self?.show(viewController, sender: self)
         }
     }
@@ -166,7 +169,7 @@ extension MovesViewController: MovesModelDelegate {
             // Add an action to the alert so that it may be dismissed.
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             
-            // Present the `MoveViewController` using the `present(_:,animated:, completion:)`
+            // Present the `PokemonDetailViewController` using the `present(_:,animated:, completion:)`
             // method, which will present the alert modally.
             self?.present(alert, animated: true)
         }
@@ -175,7 +178,7 @@ extension MovesViewController: MovesModelDelegate {
 
 // MARK: - Lazy Loading Methods
 
-extension MovesViewController {
+extension PokemonDetailsViewController {
     
     private func lazyActivityIndicator() -> UIActivityIndicatorView {
         

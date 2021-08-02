@@ -24,11 +24,16 @@ extension MainViewController {
         // Create the `ServiceClient`.
         let serviceClient = ServiceClient()
         
-        // Create the menu action.
-        let menuAction = ViewPokemonMovesAction(serviceClient: serviceClient)
+        // Create the menu actions using `DetailsOption.allCases`.
+        let menuActions: [ViewPokemonDetailsAction] = DetailsOption.allCases.map {
+            
+            // Initializer invoked using `.init(serviceClient:,option:)`
+            // to enable quick docs (option + click).
+            .init(serviceClient: serviceClient, option: $0)
+        }
         
         // Create the `PokédexViewController`.
-        let rootViewController = PokédexViewController(menuItemActions: [menuAction])
+        let rootViewController = PokédexViewController(menuItemActions: menuActions)
 
         // Return a `UINavigationController` instance with the `PokédexViewController`
         // assuming the role of `rootViewController`.

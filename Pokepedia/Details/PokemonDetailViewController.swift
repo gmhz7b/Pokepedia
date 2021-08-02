@@ -3,30 +3,31 @@ import UIKit
 import PokemonFoundation
 import CommonKit
 
-/// A `UITableViewController` subclass that displays a collection of `Move.Detail`s.
+/// A `UITableViewController` subclass that displays a collection of `Detail`s
+/// supplied by an object conforming to the `Displayable` protocol.
 ///
 /// A `UITableViewController` is a `UIViewController` subclass that provides:
 /// - A `UITableView` constrained to be full-screen.
 /// - Automatic conformance to the `UITableViewDelegate` and `UITableViewDataSource` protocols.
 ///
-/// - SeeAlso: `Move`.
-/// - SeeAlso: `Move.Detail`.
-/// - SeeAlso: `MovesViewController`.
-final class MoveViewController: UITableViewController {
+/// - SeeAlso: `Detail`.
+/// - SeeAlso: `Displayable`.
+/// - SeeAlso: `PokemonDetailsViewController`.
+final class PokemonDetailViewController: UITableViewController {
     
     // MARK: - Properties
         
-    private let details: [Move.Detail]
+    private let details: [Detail]
     
     // MARK: - Initializers
     
     /// - Parameters:
-    ///   - move: The `Move` to be displayed..
+    ///   - details: The collection of `Detail`s to be displayed.
     ///   - title: The title of this view controller.
-    init(move: Move, title: String) {
+    init(details: [Detail], title: String) {
         
         // Set the details.
-        details = move.details
+        self.details = details
         
         // Call to `super` to initialize "self".
         super.init(nibName: nil, bundle: nil)
@@ -44,7 +45,7 @@ final class MoveViewController: UITableViewController {
 
 // MARK: - Lifecycle Methods
 
-extension MoveViewController {
+extension PokemonDetailViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +65,7 @@ extension MoveViewController {
 // NOTE: - `override` keywords must be supplied as `UITableViewController` subclasses
 // automatically conform to the `UITableViewDelegate` and `UITableViewDataSource` protocols.
 
-extension MoveViewController {
+extension PokemonDetailViewController {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         
